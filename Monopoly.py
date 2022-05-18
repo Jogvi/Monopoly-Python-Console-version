@@ -1,5 +1,6 @@
 import random as r
 import time as t
+
 global_position=0
 number_of_players=0
 
@@ -53,11 +54,14 @@ def header(text,caps_type,size):
 
 def chance():
     drawn_card=r.randint(1,16)
+    print('drawing your card...')
+    t.sleep(2)
     f = open("Chancecards.txt","r")
-    print(f.readline(drawn_card))
+    print(f.readlines()[drawn_card])
 def community():
-    #needs to be finished
-    print("community")
+    drawn_card=r.randint(1,16)
+    f = open("Communitycards.txt","r")
+    print(f.readlines()[drawn_card])
 
 def buy_process(position,player):
     print(f'You can buy {board[position]} for {value[position]}$.')
@@ -71,6 +75,7 @@ def buy_process(position,player):
         print('ok, nevermind...')
     else:
         print(f'you appear to have misspelt your action. Please use {yes_inputs} or {no_inputs}')
+        t.sleep(2)
         buy_process(position,player)
         
 def rent (position,player):
@@ -91,7 +96,7 @@ def player_turn(position,player):
     roll2=r.randint(1,6)
     print(roll2)
     t.sleep(1)
-    position+=roll1+roll2
+    position=7
     if position>40:
         position-=40
         money[player]+=200
@@ -105,7 +110,7 @@ def player_turn(position,player):
            buy_process(position,player)
         elif buyable[position] and money[player]<value[position]:
             print("Sorry, you do not have enough money. Careful or you'll have to mortgage your properties")
-    if position == "Chance":
+    if board[position] == "Chance":
         chance()
     if position == "Community Chest":
         community_chest()
@@ -120,5 +125,6 @@ def turn():
     while number_of_players>1:
           for i in range (0,number_of_players):
             print(f"This is {players[i]}'s turn")
+            t.sleep(1)
             player_turn(positions[i], i)
 turn()
