@@ -20,6 +20,8 @@ hotels=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 owned = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
 rentable = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
 
+
+
 while not valid_number_of_players:
     try:
         number_of_players= int(input('Welcome! How many players are playing?'))
@@ -50,12 +52,12 @@ def header(text,caps_type,size):
         print('='*size)
 
 def chance():
-    print('chance')#just placeholder
-    #needs to be finished
-
+    drawn_card=r.randint(1,16)
+    f = open("Chancecards.txt","r")
+    print(f.readline(drawn_card))
 def community():
-    print('community chest')#just placeholder
     #needs to be finished
+    print("community")
 
 def buy_process(position,player):
     print(f'You can buy {board[position]} for {value[position]}$.')
@@ -96,7 +98,7 @@ def player_turn(position,player):
     positions[player]=position
     print(f'you have landed on {position}, which is {board[position]}!') 
     t.sleep(2)
-        if rentable[position]!= False:
+    if rentable[position]!= False:
         rent(position,player)
     else:
         if buyable[position] and money[player]>=value[position]:
