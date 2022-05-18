@@ -10,7 +10,8 @@ positions=[]
 players=[]
 yes_inputs= ["y",'yes','yesaroo','yep']
 no_inputs=['n','no','nope']
-board = ['go','Mediterranean ave.','Community','Baltic ave.','Income Tax','Reading Railroad','Oriental ave.','Chance','Vermont ave.','Conneticut ave.','In Prison-Just Visiting','St. Charles place','Electric company','States ave.', 'Virginia ave.','Pennsylvania Railroad','St James place','Community','Tenessee ave.','New York ave.','Free Parking', 'Kentucky ave.','Chance','Indiana ave.','Illinois ave.','Ventnor ave.','Water Works','Marvin Gardens','Jail','Pacific ave.','North Carolina Ave.','Community','Pennsylvania','Short Line','Chance','Park place','Luxury Tax','Broadwalk']
+board = ['go','Mediterranean ave.','Community Chest','Baltic ave.','Income Tax','Reading Railroad','Oriental ave.','Chance','Vermont ave.','Conneticut ave.','In Prison-Just Visiting','St. Charles place','Electric company','States ave.', 'Virginia ave.','Pennsylvania Railroad','St James place','Community Chest','Tenessee ave.','New York ave.','Free Parking', 'Kentucky ave.','Chance','Indiana ave.','Illinois ave.','Ventnor ave.','Water Works','Marvin Gardens','Jail','Pacific ave.','North Carolina Ave.','Community Chest','Pennsylvania','Short Line','Chance','Park place','Luxury Tax','Broadwalk']
+positions=[]
 buyable = [False,True,False,True,False,True,True,False,True,True,False,True,True,True,True,True,True,False,True,True,False,True,False,True,True,True,True,True,True,True,False,True,True,False,True,True,False,True,False,True]
 value = [0,60,0,60,0,200,100,0,100,120,0,140,150,140,160,200,180,0,180,200,0,220,0,220,240,200,260,260,150,280,0,300,300,0,320,200,0,350,0,400]
 money=[]
@@ -28,6 +29,12 @@ while not valid_number_of_players:
             valid_number_of_players=False
     except ValueError:
         print('Sorry, that was not a valid number. Please type them in numbers and not letters')
+for i in range (0,number_of_players):
+    players.append(input(f'who is player {i+1}?'))
+    positions.append(0)
+    money.append(1500)
+    positions.append(0)
+
 def header(text,caps_type,size):
     semi_size=int(size/2)
     size+=len(text)+2
@@ -41,10 +48,15 @@ def header(text,caps_type,size):
     elif caps_type == 3:
         print('-'*semi_size,text.upper(),'-'*semi_size)
         print('='*size)
-for i in range (0,number_of_players):
-    players.append(input(f'who is player {i+1}?'))
-    positions.append(0)
-    money.append(1500)
+
+def chance():
+    print('chance')#just placeholder
+    #needs to be finished
+
+def community():
+    print('community chest')#just placeholder
+    #needs to be finished
+
 def buy_process(position,player):
     print(f'You can buy {board[position]} for {value[position]}$.')
     print(f'You have {money[player]} and will have {money[player] - value[position]} $ left after the transaction')
@@ -81,20 +93,25 @@ def player_turn(position,player):
     if position>40:
         position-=40
         money[player]+=200
+    positions[player]=position
     print(f'you have landed on {position}, which is {board[position]}!') 
     t.sleep(2)
-    if rentable[position]!= False:
+        if rentable[position]!= False:
         rent(position,player)
     else:
         if buyable[position] and money[player]>=value[position]:
            buy_process(position,player)
         elif buyable[position] and money[player]<value[position]:
             print("Sorry, you do not have enough money. Careful or you'll have to mortgage your properties")
+    if position == "Chance":
+        chance()
+    if position == "Community Chest":
+        community_chest()
     if roll1 == roll2:
         print('you have rolled a double! you get a re-roll!')
         player_turn(position,player)
     else:
-        header("turn ended",3,40)
+        header("turn ended",3,50)
         t.sleep(3)
         
 def turn():
@@ -103,4 +120,3 @@ def turn():
             print(f"This is {players[i]}'s turn")
             player_turn(positions[i], i)
 turn()
-
