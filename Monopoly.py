@@ -11,16 +11,38 @@ positions=[]
 players=[]
 yes_inputs= ["y",'yes','yesaroo','yep']
 no_inputs=['n','no','nope']
-board = ['go','Mediterranean ave.','Community Chest','Baltic ave.','Income Tax','Reading Railroad','Oriental ave.','Chance','Vermont ave.','Conneticut ave.','In Prison-Just Visiting','St. Charles place','Electric company','States ave.', 'Virginia ave.','Pennsylvania Railroad','St James place','Community Chest','Tenessee ave.','New York ave.','Free Parking', 'Kentucky ave.','Chance','Indiana ave.','Illinois ave.','Ventnor ave.','Water Works','Marvin Gardens','Jail','Pacific ave.','North Carolina Ave.','Community Chest','Pennsylvania','Short Line','Chance','Park place','Luxury Tax','Broadwalk']
+board = ['go','Mediterranean ave.','Community Chest','Baltic ave.',\
+         'Income Tax','Reading Railroad','Oriental ave.','Chance',\
+         'Vermont ave.','Conneticut ave.','In Prison-Just Visiting',\
+         'St. Charles place','Electric company','States ave.', 'Virginia ave.',\
+         'Pennsylvania Railroad','St James place','Community Chest','Tenessee ave.',\
+         'New York ave.','Free Parking', 'Kentucky ave.','Chance','Indiana ave.',\
+         'Illinois ave.','Ventnor ave.','Water Works','Marvin Gardens','Jail',\
+         'Pacific ave.','North Carolina Ave.','Community Chest','Pennsylvania',\
+         'Short Line','Chance','Park place','Luxury Tax','Broadwalk']
+property_type=[0,1,0,1,4,2,1,0,1,1,0,1,3,1,1,1,1,0,1,1,0,1,0,1,1,1,3,1,0,1,1,\
+               0,1,2,0,1,5,1]
 positions=[]
-buyable = [False,True,False,True,False,True,True,False,True,True,False,True,True,True,True,True,True,False,True,True,False,True,False,True,True,True,True,True,True,True,False,True,True,False,True,True,False,True,False,True]
-value = [0,60,0,60,0,200,100,0,100,120,0,140,150,140,160,200,180,0,180,200,0,220,0,220,240,200,260,260,150,280,0,300,300,0,320,200,0,350,0,400]
+buyable = [False,True,False,True,False,True,True,False,True,True,False,True,\
+           True,True,True,True,True,False,True,True,False,True,False,True,True,\
+           True,True,True,True,True,False,True,True,False,True,True,False,True,\
+           False,True]
+value = [0,60,0,60,0,200,100,0,100,120,0,140,150,140,160,200,180,0,180,200,0,\
+         220,0,220,240,200,260,260,150,280,0,300,300,0,320,200,0,350,0,400]
 money=[]
-houses=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-hotels=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-owned = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
-rentable = [False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False,False]
-
+houses=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,\
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+hotels=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,\
+        0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+owned = [False,False,False,False,False,False,False,False,False,False,\
+         False,False,False,False,False,False,False,False,False,False,False,\
+         False,False,False,False,False,False,False,False,False,False,False,\
+         False,False,False,False,False,False,False,False]
+rentable = [False,False,False,False,"The Bank",False,False,False,False,False,\
+            False,False,False,False,False,False,False,False,False,False,False,\
+            False,False,False,False,False,False,False,False,False,False,False,\
+            False,False,False,False,False,False,False,False]
+railroads_owned=['Bank','Bank','Bank','Bank']
 
 
 while not valid_number_of_players:
@@ -58,12 +80,14 @@ def chance():
     t.sleep(2)
     f = open("Chancecards.txt","r")
     print(f.readlines()[drawn_card])
+
 def community():
     drawn_card=r.randint(1,16)
     f = open("Communitycards.txt","r")
     print(f.readlines()[drawn_card])
 
 def buy_process(position,player):
+    landlord=rentable[position]
     print(f'You can buy {board[position]} for {value[position]}$.')
     print(f'You have {money[player]} and will have {money[player] - value[position]} $ left after the transaction')
     action = input(f'would you like to buy {board[position]}?')
@@ -71,6 +95,7 @@ def buy_process(position,player):
         money[player]-=value[position]
         owned[position]=players[player]
         rentable[position]=players[player]
+        buyable[position]=False
     elif action in no_inputs:
         print('ok, nevermind...')
     else:
@@ -79,15 +104,31 @@ def buy_process(position,player):
         buy_process(position,player)
         
 def rent (position,player):
-    if houses[position] == 0 and hotels[position] == 0:
-        rent=value[position]/10
-    elif hotels[position]>0:
-        rent= value[position]/10*5
-    else:
-        rent = (value[position]/10)*houses[position]*5
+    #houses
+    if property_type[position] == 1:
+        if houses[position] == 0 and hotels[position] == 0:
+            rent=value[position]/10
+        elif hotels[position]>0:
+            rent= value[position]/10*5
+        else:
+            rent = (value[position]/10)*houses[position]*5
+    elif property_type[position]==2:
+        #railroads
+        number_of_railroads=0
+        for i in range(len(railroads_owned)):
+         if i == player:
+                number_of_railroads+=1
+        if number_of_railroads == 1:
+            rent = 25
+        elif number_of_railroads ==2:
+            rent=50
+        elif number_of_railroads == 3:
+            rent=100
+        elif number_of_railroads ==4:
+            rent=200
+    landlord=rentable[position]        
     money[player]-=rent
-    print(f'{player}, you just paid {rent} to {rentable[position]}!')
-    
+    print(f'{players[player]}, you just paid {rent} to {landlord}!')
     
 def player_turn(position,player):
     roll1=r.randint(1,6)
@@ -96,14 +137,14 @@ def player_turn(position,player):
     roll2=r.randint(1,6)
     print(roll2)
     t.sleep(1)
-    position=7
+    position+=roll1+roll2
     if position>40:
         position-=40
         money[player]+=200
     positions[player]=position
     print(f'you have landed on {position}, which is {board[position]}!') 
     t.sleep(2)
-    if rentable[position]!= False:
+    if rentable[position]!= False and rentable[position] != players[player]:
         rent(position,player)
     else:
         if buyable[position] and money[player]>=value[position]:
