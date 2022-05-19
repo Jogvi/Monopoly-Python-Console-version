@@ -74,12 +74,15 @@ def header(text,caps_type,size):
         print('-'*semi_size,text.upper(),'-'*semi_size)
         print('='*size)
 
-def chance():
+def chance(player):
     drawn_card=r.randint(1,16)
     print('drawing your card...')
     t.sleep(2)
     f = open("Chancecards.txt","r")
     print(f.readlines()[drawn_card])
+    if drawn_card == 1:
+        position+=(39-positions[player])
+    
 
 def community():
     drawn_card=r.randint(1,16)
@@ -88,8 +91,8 @@ def community():
 
 def buy_process(position,player):
     landlord=rentable[position]
-    print(f'You can buy {board[position]} for {value[position]}$.')
-    print(f'You have {money[player]} and will have {money[player] - value[position]} $ left after the transaction')
+    print(f'You can buy {board[position]} for {value[position]}$.'\
+          f'You have {money[player]} and will have {money[player] - value[position]} $ left after the transaction')
     action = input(f'would you like to buy {board[position]}?')
     if action in yes_inputs:
         money[player]-=value[position]
@@ -105,6 +108,7 @@ def buy_process(position,player):
         
 def rent (position,player):
     #houses
+    rent=0
     if property_type[position] == 1:
         if houses[position] == 0 and hotels[position] == 0:
             rent=value[position]/10
@@ -112,8 +116,8 @@ def rent (position,player):
             rent= value[position]/10*5
         else:
             rent = (value[position]/10)*houses[position]*5
+    #railroads
     elif property_type[position]==2:
-        #railroads
         number_of_railroads=0
         for i in range(len(railroads_owned)):
          if i == player:
@@ -141,6 +145,7 @@ def player_turn(position,player):
     if position>40:
         position-=40
         money[player]+=200
+        input('You have passed GO!Press enter to collect your money!')
     positions[player]=position
     print(f'you have landed on {position}, which is {board[position]}!') 
     t.sleep(2)
@@ -152,7 +157,7 @@ def player_turn(position,player):
         elif buyable[position] and money[player]<value[position]:
             print("Sorry, you do not have enough money. Careful or you'll have to mortgage your properties")
     if board[position] == "Chance":
-        chance()
+        chance(player)
     if position == "Community Chest":
         community_chest()
     if roll1 == roll2:
