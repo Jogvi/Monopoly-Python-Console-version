@@ -65,7 +65,6 @@ def save(obj,file):
 def load(file):
     import_result=p.load(open(file,'rb'))
     return import_result
-print(board)
 def header(text,caps_type,size):
     semi_size=int(size/2)
     size+=len(text)+2
@@ -136,6 +135,15 @@ def rent (position,player):
             rent=100
         elif number_of_railroads ==4:
             rent=200
+    elif property_type[position]==3:
+        #tax
+        if position==5:
+            action=input('Would you like to pay 10% of your worth, or 200(press 0 for 10%, and 1 for 200$'))
+            if action==1:
+                money[player]-=net_worth[player]/10
+                print(f"You've just paid {net_worth[player]/10}")
+                input('Press [Enter] to continue')
+        print('tax')
     landlord=rentable[position]        
     money[player]-=rent
     print(f'{players[player]}, you just paid {rent} to {landlord}!')
@@ -170,7 +178,7 @@ def player_turn(position,player):
         print('you have rolled a double! you get a re-roll!')
         player_turn(position,player)
     else:
-        header("turn ended",3,50)
+        header("turn ended",3,80)
         t.sleep(3)
         
 def turn():
