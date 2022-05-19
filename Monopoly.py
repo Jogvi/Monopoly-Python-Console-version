@@ -1,6 +1,6 @@
 import random as r
 import time as t
-
+import pickle as p
 global_position=0
 number_of_players=0
 
@@ -60,6 +60,12 @@ for i in range (0,number_of_players):
     money.append(1500)
     positions.append(0)
 
+def save(obj,file):
+    p.dump( obj, open( file, "wb" ) )
+def load(file):
+    import_result=p.load(open(file,'rb'))
+    return import_result
+print(board)
 def header(text,caps_type,size):
     semi_size=int(size/2)
     size+=len(text)+2
