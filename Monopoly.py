@@ -22,6 +22,7 @@ board = ['go','Mediterranean ave.','Community Chest','Baltic ave.',\
          'Short Line','Chance','Park place','Luxury Tax','Broadwalk']
 property_type=[0,1,0,1,4,2,1,0,1,1,0,1,3,1,1,1,1,0,1,1,0,1,0,1,1,1,3,1,0,1,1,\
                0,1,2,0,1,5,1]
+owned_utilities=['The Bank','The Bank']
 positions=[]
 buyable = [False,True,False,True,False,True,True,False,True,True,False,True,\
            True,True,True,True,True,False,True,True,False,True,False,True,True,\
@@ -30,6 +31,7 @@ buyable = [False,True,False,True,False,True,True,False,True,True,False,True,\
 value = [0,60,0,60,0,200,100,0,100,120,0,140,150,140,160,200,180,0,180,200,0,\
          220,0,220,240,200,260,260,150,280,0,300,300,0,320,200,0,350,0,400]
 money=[]
+net_worth=[]
 houses=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,\
         0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 hotels=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,\
@@ -59,6 +61,7 @@ for i in range (0,number_of_players):
     positions.append(0)
     money.append(1500)
     positions.append(0)
+    net_worth.append(0)
 
 def save(obj,file):
     p.dump( obj, open( file, "wb" ) )
@@ -104,15 +107,22 @@ def buy_process(position,player):
         owned[position]=players[player]
         rentable[position]=players[player]
         buyable[position]=False
+        if property_type[position]==3:
+            #approximate bc too lazy to count, and both are far away anyway...
+            if position<15:
+                owned_utilities[0]=players[player]
+            else:
+                owned_utilities[1]=player
+        net_worth[player]+=value[position]
     elif action in no_inputs:
         print('ok, nevermind...')
     else:
         print(f'you appear to have misspelt your action. Please use {yes_inputs} or {no_inputs}')
         t.sleep(2)
         buy_process(position,player)
-        
 def rent (position,player):
     #houses
+    landlord=rentable[position]
     rent=0
     if property_type[position] == 1:
         if houses[position] == 0 and hotels[position] == 0:
@@ -125,7 +135,7 @@ def rent (position,player):
     elif property_type[position]==2:
         number_of_railroads=0
         for i in range(len(railroads_owned)):
-         if i == player:
+         if i == landlord:
                 number_of_railroads+=1
         if number_of_railroads == 1:
             rent = 25
@@ -135,16 +145,38 @@ def rent (position,player):
             rent=100
         elif number_of_railroads ==4:
             rent=200
-    elif property_type[position]==3:
+    elif property_type[position]==4:
         #tax
         if position==5:
-            action=input('Would you like to pay 10% of your worth, or 200(press 0 for 10%, and 1 for 200$'))
-            if action==1:
+            action=input('Would you like to pay 10% of your worth, or 200$(press 0 for 10%, and 1 for 200$')
+            if action==0:
                 money[player]-=net_worth[player]/10
-                print(f"You've just paid {net_worth[player]/10}")
+                print(f"You've just paid {net_worth[player]/10}$ in tax")
                 input('Press [Enter] to continue')
-        print('tax')
-    landlord=rentable[position]        
+            elif action==1:
+                money[player]-=200
+                print('You paid 200$ in tax...')
+                input('Press [Enter] to continue')
+        elif position == 38:
+            money[player]-=75
+            print('You just paid 75$ in tax!')
+    elif property_type[position] == 3:
+        utilities_owned=0
+        for i in range(0,len(owned_utilities)):
+            if owned_utilities[i]==landlord:
+                utilities_owned+=1
+        if owned_utilities==1:
+            roll1=r.randint(1,6)
+            print(roll1)
+            roll2=r.randint(1,6)
+            print(roll2)
+            rent=(roll1+roll2)*4
+        elif owned_utilities==2:
+            roll1=r.randint(1,6)
+            print(roll1)
+            roll2=r.randint(1,6)
+            print(roll2)
+            rent=(roll1+roll2)*10
     money[player]-=rent
     print(f'{players[player]}, you just paid {rent} to {landlord}!')
     
@@ -156,6 +188,7 @@ def player_turn(position,player):
     print(roll2)
     t.sleep(1)
     position+=roll1+roll2
+    position=12
     if position>40:
         position-=40
         money[player]+=200
