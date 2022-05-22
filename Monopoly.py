@@ -61,7 +61,7 @@ for i in range (0,number_of_players):
     positions.append(0)
     money.append(1500)
     positions.append(0)
-    net_worth.append(0)
+    net_worth.append(1500)
 
 def save(obj,file):
     p.dump( obj, open( file, "wb" ) )
@@ -147,9 +147,10 @@ def rent (position,player):
             rent=200
     elif property_type[position]==4:
         #tax
-        if position==5:
+        if position==4:
             action=input('Would you like to pay 10% of your worth, or 200$(press 0 for 10%, and 1 for 200$')
             if action==0:
+                net_worth[player]+=
                 money[player]-=net_worth[player]/10
                 print(f"You've just paid {net_worth[player]/10}$ in tax")
                 input('Press [Enter] to continue')
@@ -157,25 +158,28 @@ def rent (position,player):
                 money[player]-=200
                 print('You paid 200$ in tax...')
                 input('Press [Enter] to continue')
-        elif position == 38:
+        elif position == 37:
             money[player]-=75
             print('You just paid 75$ in tax!')
     elif property_type[position] == 3:
+        #utilities
         utilities_owned=0
         for i in range(0,len(owned_utilities)):
             if owned_utilities[i]==landlord:
                 utilities_owned+=1
-        if owned_utilities==1:
+        if utilities_owned==1:
             roll1=r.randint(1,6)
             print(roll1)
             roll2=r.randint(1,6)
             print(roll2)
+            input('Press [Enter] to continue')
             rent=(roll1+roll2)*4
-        elif owned_utilities==2:
+        elif utilities_owned==2:
             roll1=r.randint(1,6)
             print(roll1)
             roll2=r.randint(1,6)
             print(roll2)
+            input('Press [Enter] to continue')
             rent=(roll1+roll2)*10
     money[player]-=rent
     print(f'{players[player]}, you just paid {rent} to {landlord}!')
@@ -188,7 +192,7 @@ def player_turn(position,player):
     print(roll2)
     t.sleep(1)
     position+=roll1+roll2
-    position=12
+    position=4
     if position>40:
         position-=40
         money[player]+=200
