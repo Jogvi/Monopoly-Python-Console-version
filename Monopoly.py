@@ -85,7 +85,6 @@ def advance(arrival):
     positions[player]+=arrival-positions[player]
 def chance(player):
     drawn_card=r.randint(1,16)
-    drawn_card=5
     print('drawing your card...')
     t.sleep(2)
     f = open("Chancecards.txt","r")
@@ -105,6 +104,7 @@ def chance(player):
 
 def nearest_railroad(position,player):
     if position<35:
+        position+=1
         while property_type[position]!=2:
             position+=1
             positions[player]+=1
@@ -131,15 +131,15 @@ def buy_process(position,player):
         owned[position]=players[player]
         rentable[position]=players[player]
         buyable[position]=False
-        if property_type==2:
+        if property_type[position]==2:
             if position==5:
-                owned_railroads[0]=player
+                railroads_owned[0]=players[player]
             elif position==15:
-                owned_railroads[1]=player
+                railroads_owned[1]=players[player]
             elif position==25:
-                owned_railroads[2]=player
+                railroads_owned[2]=players[player]
             elif position==35:
-                owned_railroads[3]=player
+                railroads_owned[3]=players[player]
         elif property_type[position]==3:
             if position==12:
                 owned_utilities[0]=players[player]
@@ -167,7 +167,7 @@ def rent (position,player,multiplier):
     elif property_type[position]==2:
         number_of_railroads=0
         for i in range(len(railroads_owned)):
-         if i == landlord:
+            if railroads_owned[i] == landlord:
                 number_of_railroads+=1
         if number_of_railroads == 1:
             rent = 25
@@ -215,6 +215,7 @@ def rent (position,player,multiplier):
     rent*=multiplier
     money[player]-=rent
     print(f'{players[player]}, you just paid {rent} to {landlord}!')
+    t.sleep(1)
     
 def player_turn(position,player):
     roll1=r.randint(1,6)
@@ -224,7 +225,6 @@ def player_turn(position,player):
     print(roll2)
     t.sleep(1)
     position+=roll1+roll2
-    position=7
     if position>40:
         position-=40
         money[player]+=200
