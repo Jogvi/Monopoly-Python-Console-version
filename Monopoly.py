@@ -20,7 +20,7 @@ board = ['go','Mediterranean ave.','Community Chest','Baltic ave.',\
          'Illinois ave.','Ventnor ave.','Water Works','Marvin Gardens','Jail',\
          'Pacific ave.','North Carolina Ave.','Community Chest','Pennsylvania',\
          'Short Line','Chance','Park place','Luxury Tax','Broadwalk']
-property_type=[0,1,0,1,4,2,1,0,1,1,0,1,3,1,1,1,1,0,1,1,0,1,0,1,1,1,3,1,0,1,1,\
+property_type=[0,1,0,1,4,2,1,0,1,1,0,1,3,1,1,2,1,0,1,1,0,1,0,1,1,1,3,1,0,1,1,\
                0,1,2,0,1,5,1]
 owned_utilities=['The Bank','The Bank']
 positions=[]
@@ -85,6 +85,7 @@ def advance(arrival):
     positions[player]+=arrival-positions[player]
 def chance(player):
     drawn_card=r.randint(1,16)
+    drawn_card=5
     print('drawing your card...')
     t.sleep(2)
     f = open("Chancecards.txt","r")
@@ -99,14 +100,22 @@ def chance(player):
     elif drawn_card==4:
         advance(11)
     elif drawn_card==5:
-        nearest_railroad(positions[player])
+        nearest_railroad(positions[player],player)
 
 
-def nearest_railroad(position):
-    #not done yet
-    print('go to the nearest railroad')
-
-
+def nearest_railroad(position,player):
+    if position<35:
+        while property_type[position]!=2:
+            position+=1
+            positions[player]+=1
+    else:
+        positions[player]=5
+        money[player]+=200
+    if rentable[position]!= False and rentable[position] != players[player]:
+        rent(position,player,2)
+    else:
+        if buyable[position] and money[player]>=value[position]:
+           buy_process(position,player)
 def community():
     drawn_card=r.randint(1,16)
     f = open("Communitycards.txt","r")
@@ -122,11 +131,19 @@ def buy_process(position,player):
         owned[position]=players[player]
         rentable[position]=players[player]
         buyable[position]=False
-        if property_type[position]==3:
-            #approximate bc too lazy to count, and both are far away anyway...
-            if position<15:
+        if property_type==2:
+            if position==5:
+                owned_railroads[0]=player
+            elif position==15:
+                owned_railroads[1]=player
+            elif position==25:
+                owned_railroads[2]=player
+            elif position==35:
+                owned_railroads[3]=player
+        elif property_type[position]==3:
+            if position==12:
                 owned_utilities[0]=players[player]
-            else:
+            elif position==27:
                 owned_utilities[1]=player
         net_worth[player]+=value[position]
     elif action in no_inputs:
@@ -135,7 +152,7 @@ def buy_process(position,player):
         print(f'you appear to have misspelt your action. Please use {yes_inputs} or {no_inputs}')
         t.sleep(2)
         buy_process(position,player)
-def rent (position,player):
+def rent (position,player,multiplier):
     #houses
     landlord=rentable[position]
     rent=0
@@ -165,7 +182,6 @@ def rent (position,player):
         if position==4:
             action=input('Would you like to pay 10% of your worth, or 200$(press 0 for 10%, and 1 for 200$')
             if action==0:
-                net_worth[player]+=
                 money[player]-=net_worth[player]/10
                 print(f"You've just paid {net_worth[player]/10}$ in tax")
                 input('Press [Enter] to continue')
@@ -196,6 +212,7 @@ def rent (position,player):
             print(roll2)
             input('Press [Enter] to continue')
             rent=(roll1+roll2)*10
+    rent*=multiplier
     money[player]-=rent
     print(f'{players[player]}, you just paid {rent} to {landlord}!')
     
@@ -207,7 +224,7 @@ def player_turn(position,player):
     print(roll2)
     t.sleep(1)
     position+=roll1+roll2
-    position=4
+    position=7
     if position>40:
         position-=40
         money[player]+=200
@@ -216,7 +233,7 @@ def player_turn(position,player):
     print(f'you have landed on {position}, which is {board[position]}!') 
     t.sleep(2)
     if rentable[position]!= False and rentable[position] != players[player]:
-        rent(position,player)
+        rent(position,player,1)
     else:
         if buyable[position] and money[player]>=value[position]:
            buy_process(position,player)
