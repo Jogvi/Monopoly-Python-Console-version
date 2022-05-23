@@ -81,7 +81,8 @@ def header(text,caps_type,size):
     elif caps_type == 3:
         print('-'*semi_size,text.upper(),'-'*semi_size)
         print('='*size)
-
+def advance(arrival):
+    positions[player]+=arrival-positions[player]
 def chance(player):
     drawn_card=r.randint(1,16)
     print('drawing your card...')
@@ -89,8 +90,22 @@ def chance(player):
     f = open("Chancecards.txt","r")
     print(f.readlines()[drawn_card])
     if drawn_card == 1:
-        position+=(39-positions[player])
-    
+       advance(39)
+    elif drawn_card ==2:
+        positions[player]=0
+        money[player]+=200
+    elif drawn_card==3:
+        advance(24)
+    elif drawn_card==4:
+        advance(11)
+    elif drawn_card==5:
+        nearest_railroad(positions[player])
+
+
+def nearest_railroad(position):
+    #not done yet
+    print('go to the nearest railroad')
+
 
 def community():
     drawn_card=r.randint(1,16)
